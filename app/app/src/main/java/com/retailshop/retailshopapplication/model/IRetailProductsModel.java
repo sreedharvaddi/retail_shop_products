@@ -1,5 +1,6 @@
 package com.retailshop.retailshopapplication.model;
 
+import com.retailshop.retailshopapplication.model.repo.IRepo;
 import com.retailshop.retailshopapplication.presenter.IRetailProductsPresenter;
 
 import java.util.List;
@@ -10,7 +11,9 @@ import java.util.List;
 
 public interface IRetailProductsModel {
     List<RetailProduct> loadProducts(int pageNo, int pageSize);
-    IRetailProductsPresenter setPresenter(IRetailProductsPresenter presenter);
+    void setPresenter(IModelCallbacks presenter);
+    void setOnlineRepo(IRepo repo);
+    boolean isOnline();
     void unregisterPresenter();
     interface IModelCallbacks {
         void onLoadFinished(int status, List<RetailProduct> retailProducts);

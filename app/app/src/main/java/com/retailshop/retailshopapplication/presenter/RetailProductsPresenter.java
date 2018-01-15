@@ -2,6 +2,7 @@ package com.retailshop.retailshopapplication.presenter;
 
 import com.retailshop.retailshopapplication.model.IRetailProductsModel;
 import com.retailshop.retailshopapplication.model.RetailProduct;
+import com.retailshop.retailshopapplication.model.RetailProductsModel;
 
 import java.util.List;
 
@@ -15,6 +16,13 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
 
     IViewCallbacks mView;
     IRetailProductsModel model;
+
+    @Override
+    public void setModel(IRetailProductsModel model) {
+        this.model = model;
+    }
+
+    public IRetailProductsModel getModel() { return model; }
     @Override
     public void loadProducts(int page, int pageSize) {
         model.loadProducts(page, pageSize);
@@ -31,6 +39,7 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
         mView = null;
     }
 
+
     @Override
     public void onLoadFinished(int status, List<RetailProduct> retailProducts) {
         if (status == SUCCESS) {
@@ -40,5 +49,31 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
             mView.showError();
         }
         mView.showProducts(retailProducts);
+    }
+
+    static public class Builder {
+        IViewCallbacks viewCallbacks;
+        IRetailProductsModel model;
+        public Builder() {
+
+        }
+        Builder setModel(IRetailProductsModel model) {
+            this.model = model;
+            return this;
+        }
+        Builder setView(IViewCallbacks view) {
+            this.viewCallbacks = view;
+            return this;
+        }
+        public IRetailProductsPresenter build() {
+            IRetailProductsPresenter productsPresenter = new RetailProductsPresenter();
+            if (viewCallbacks != null) {
+                productsPresenter.attachView(viewCallbacks);
+            }
+            if (model != null) {
+                model.setPresenter((IRetailProductsModel.IModelCallbacks) productsPresenter);
+            }
+            return productsPresenter;
+        }
     }
 }
