@@ -10,7 +10,7 @@ import com.retailshop.retailshopapplication.presenter.RetailProductsPresenter;
  * Created by sreedhar on 1/15/18.
  */
 
-class RetailProductsLoader extends Loader<RetailProductsPresenter> {
+public class RetailProductsLoader extends Loader<RetailProductsPresenter> {
     RetailProductsPresenter presenter;
     public RetailProductsLoader(Context context) {
         super(context);
