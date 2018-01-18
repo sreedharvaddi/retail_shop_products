@@ -1,14 +1,47 @@
 package com.retailshop.retailshopapplication.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by sreedhar on 1/14/18.
  */
 
-public class RetailProduct {
+public class RetailProduct implements Parcelable {
+
     String productId;
     String productName;
     String shortDescription;
     String longDescription;
+    String price;
+    String productImage;
+    double reviewRating;
+    int reviewCount;
+    boolean inStock;
+
+    protected RetailProduct(Parcel in) {
+        productId = in.readString();
+        productName = in.readString();
+        shortDescription = in.readString();
+        longDescription = in.readString();
+        price = in.readString();
+        productImage = in.readString();
+        reviewRating = in.readDouble();
+        reviewCount = in.readInt();
+        inStock = in.readByte() != 0;
+    }
+
+    public static final Creator<RetailProduct> CREATOR = new Creator<RetailProduct>() {
+        @Override
+        public RetailProduct createFromParcel(Parcel in) {
+            return new RetailProduct(in);
+        }
+
+        @Override
+        public RetailProduct[] newArray(int size) {
+            return new RetailProduct[size];
+        }
+    };
 
     public String getProductId() {
         return productId;
@@ -82,9 +115,21 @@ public class RetailProduct {
         this.inStock = inStock;
     }
 
-    String price;
-    String productImage;
-    double reviewRating;
-    int reviewCount;
-    boolean inStock;
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(productId);
+        parcel.writeString(productName);
+        parcel.writeString(shortDescription);
+        parcel.writeString(longDescription);
+        parcel.writeString(price);
+        parcel.writeString(productImage);
+        parcel.writeDouble(reviewRating);
+        parcel.writeInt(reviewCount);
+        parcel.writeByte((byte) (inStock ? 1 : 0));
+    }
 }

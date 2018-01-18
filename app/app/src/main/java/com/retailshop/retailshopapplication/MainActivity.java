@@ -50,8 +50,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ft.commit();
     }
 
-    public void showDetailFragment() {
+    public void showDetailFragment(RetailProduct product) {
         RetailProductDetailFragment fragment = new RetailProductDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("product", product);
+        fragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.container_id, fragment);
         ft.addToBackStack("detailed_fragment");

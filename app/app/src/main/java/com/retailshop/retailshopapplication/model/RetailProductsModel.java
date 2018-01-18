@@ -13,6 +13,7 @@ public class RetailProductsModel implements IRetailProductsModel, IRepo.ICallbac
     IRepo mOnlineRepo;
     RetailProductsData mProductsData = new RetailProductsData();
     IModelCallbacks mPresenter;
+
     @Override
     public List<RetailProduct> loadProducts(int pageNo, int pageSize) {
         if (mOnlineRepo != null) {
@@ -61,6 +62,11 @@ public class RetailProductsModel implements IRetailProductsModel, IRepo.ICallbac
     @Override
     public void onFailuer(String err) {
 
+    }
+
+    @Override
+    public RetailProductsData getCurrentData() {
+        return mProductsData;
     }
 
     public static class Builder {

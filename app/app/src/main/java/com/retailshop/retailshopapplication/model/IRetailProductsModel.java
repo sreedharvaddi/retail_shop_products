@@ -15,6 +15,7 @@ public interface IRetailProductsModel {
     void setOnlineRepo(IRepo repo);
     boolean isOnline();
     void unregisterPresenter();
+    RetailProductsData getCurrentData();
     interface IModelCallbacks {
         void onLoadFinished(int status, List<RetailProduct> retailProducts);
     }

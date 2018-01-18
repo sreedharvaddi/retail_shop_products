@@ -16,6 +16,7 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
 
     IViewCallbacks mView;
     IRetailProductsModel model;
+    boolean isLoading = false;
 
     @Override
     public void setModel(IRetailProductsModel model) {
@@ -25,7 +26,10 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
     public IRetailProductsModel getModel() { return model; }
     @Override
     public void loadProducts(int page, int pageSize) {
-        model.loadProducts(page, pageSize);
+        if (!isLoading) {
+            isLoading = true;
+            model.loadProducts(page, pageSize);
+        }
         mView.showProgres();
     }
 
@@ -42,6 +46,7 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
 
     @Override
     public void onLoadFinished(int status, List<RetailProduct> retailProducts) {
+        isLoading = false;
         if (status == SUCCESS) {
             mView.showSuccess();
         }
@@ -50,6 +55,8 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
         }
         mView.showProducts(retailProducts);
     }
+
+    public boolean isLoading() { return  isLoading; }
 
     static public class Builder {
         IViewCallbacks viewCallbacks;

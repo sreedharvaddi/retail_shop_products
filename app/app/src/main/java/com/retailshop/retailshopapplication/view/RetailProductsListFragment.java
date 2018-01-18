@@ -79,6 +79,16 @@ public class RetailProductsListFragment extends Fragment implements LoaderManage
         productsPresenter.attachView(this);
         ((RetailApplication)getActivity().getApplicationContext()).getModel().setPresenter(productsPresenter);
         productsPresenter.setModel(((RetailApplication)getActivity().getApplicationContext()).getModel());
+        refresh();
+    }
+
+    private void refresh() {
+        List<RetailProduct> list = productsPresenter.getModel().getCurrentData().getProductList();
+        if (list != null) {
+            showProducts(list);
+        }
+        productsPresenter.loadProducts(productsPresenter.getModel().getCurrentData().getPageNumber()
+                , productsPresenter.getModel().getCurrentData().getPageSize());
     }
 
     @Override

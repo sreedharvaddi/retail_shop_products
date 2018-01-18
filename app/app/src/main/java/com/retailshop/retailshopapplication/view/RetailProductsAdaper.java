@@ -3,10 +3,13 @@ package com.retailshop.retailshopapplication.view;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.retailshop.retailshopapplication.MainActivity;
 import com.retailshop.retailshopapplication.R;
 import com.retailshop.retailshopapplication.model.RetailProduct;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +27,19 @@ class RetailProductsAdaper extends android.support.v7.widget.RecyclerView.Adapte
     }
 
     @Override
-    public void onBindViewHolder(RetailProductItemViewHolder holder, int position) {
-        RetailProduct product=  productList.get(position);
+    public void onBindViewHolder(final RetailProductItemViewHolder holder, int position) {
+        final RetailProduct product=  productList.get(position);
         holder.txtProductName.setText(product.getProductName());
         holder.txtProductDesc.setText(product.getShortDescription() != null ? Html.fromHtml(product.getShortDescription()) : "");
         holder.txtPrice.setText(product.getPrice());
+        Picasso.with(holder.imgProductImage.getRootView().getContext())
+        .load(product.getProductImage()).into(holder.imgProductImage);
+        holder.txtProductName.getRootView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)view.getContext()).showDetailFragment(product);
+            }
+        });
     }
 
     @Override
