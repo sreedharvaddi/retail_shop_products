@@ -1,31 +1,14 @@
-package com.retailshop.retailshopapplication.model;
+package com.retailshop.retailshopapplication.model.repo;
+
+import com.retailshop.retailshopapplication.model.RetailProduct;
 
 import java.util.List;
 
 /**
- * Created by sreedhar on 1/14/18.
+ * Created by sreedhar on 1/15/18.
  */
 
-public class RetailProductsData {
-    String id;
-    List<RetailProduct> productList;
-    int totalProducts;
-    int pageNumber;
-    int pageSize;
-    int status;
-    String kind;
-    String etag;
-    public RetailProductsData() {
-        id = "";
-        productList = null;
-        totalProducts = 0;
-        pageNumber = 0;
-        pageSize = 0;
-        status = 0;
-        kind = "";
-        etag= "";
-    }
-
+public class RetailProductResponse {
     public String getId() {
         return id;
     }
@@ -34,12 +17,12 @@ public class RetailProductsData {
         this.id = id;
     }
 
-    public List<RetailProduct> getProductList() {
-        return productList;
+    public List<RetailProduct> getProducts() {
+        return products;
     }
 
-    public void setProductList(List<RetailProduct> productList) {
-        this.productList = productList;
+    public void setProducts(List<RetailProduct> productList) {
+        this.products = productList;
     }
 
     public int getTotalProducts() {
@@ -90,4 +73,12 @@ public class RetailProductsData {
         this.etag = etag;
     }
 
+    String id;
+    public List<RetailProduct> products;
+    public int totalProducts;
+    public int pageNumber;
+    public int pageSize;
+    int status;
+    String kind;
+    String etag;
 }
