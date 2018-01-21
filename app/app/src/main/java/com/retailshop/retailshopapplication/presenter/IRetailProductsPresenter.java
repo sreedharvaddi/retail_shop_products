@@ -15,6 +15,11 @@ public interface IRetailProductsPresenter {
     void detachView(IViewCallbacks viewCallbacks);
     void setModel(IRetailProductsModel model);
 
+    boolean isAllDataLoaded();
+    void loadProducts();
+
+    IRetailProductsModel getModel();
+
     interface IViewCallbacks {
         void showProgres();
         void showProducts(List<RetailProduct> retailProductList);

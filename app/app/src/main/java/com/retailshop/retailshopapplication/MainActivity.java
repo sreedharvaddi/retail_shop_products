@@ -2,6 +2,7 @@ package com.retailshop.retailshopapplication;
 
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,37 +18,37 @@ import com.retailshop.retailshopapplication.view.RetailProductsListFragment;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<RetailProductsPresenter>,IRetailProductsPresenter.IViewCallbacks {
+public class MainActivity extends AppCompatActivity {
 
-    //RetailProductsPresenter productsPresenter;
-    //TextView txtStatus;
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        if (productsPresenter == null) {
-//            getLoaderManager().initLoader(100, savedInstanceState, this);
-//        }
-//        else {
-//            Loader<RetailProductsPresenter> loader = getLoaderManager().getLoader(100);
-//            productsPresenter = ((RetailProductsLoader)loader).getPresenter();
-//        }
-        setup();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setup();
+            }
+        }, 1000);
     }
 
     private void setup() {
-//        findViewById(R.id.btnLoad).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                productsPresenter.loadProducts(1, 10);
-//            }
-//        });
-//        txtStatus = (TextView) findViewById(R.id.txtStatus);
-        RetailProductsListFragment fragment = new RetailProductsListFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.container_id, fragment);
-        ft.addToBackStack("fragment_list");
-        ft.commit();
+        showListFragment();
+    }
+
+    public void showListFragment() {
+        if(getSupportFragmentManager().findFragmentByTag("retail_product_list_fragment") == null) {
+            RetailProductsListFragment fragment = new RetailProductsListFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.container_id, fragment, "retail_product_list_fragment");
+            ft.commit();
+        }
     }
 
     public void showDetailFragment(RetailProduct product) {
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         bundle.putParcelable("product", product);
         fragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.container_id, fragment);
+        ft.add(R.id.container_id, fragment, "retail_product_detail_fragment");
         ft.addToBackStack("detailed_fragment");
         ft.commit();
     }
@@ -64,56 +65,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onStart() {
         super.onStart();
-//        productsPresenter.attachView(this);
-//        ((RetailApplication)getApplicationContext()).getModel().setPresenter(productsPresenter);
-//        productsPresenter.setModel(((RetailApplication)getApplicationContext()).getModel());
-
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //productsPresenter.detachView(this);
     }
 
-    @Override
-    public Loader<RetailProductsPresenter> onCreateLoader(int i, Bundle bundle) {
-        return new RetailProductsLoader(this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<RetailProductsPresenter> loader, RetailProductsPresenter retailProductsPresenter) {
-        //productsPresenter = retailProductsPresenter;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<RetailProductsPresenter> loader) {
-        //productsPresenter =  null;
-
-    }
-
-    @Override
-    public void showProgres() {
-        Toast.makeText(this, "Progress", Toast.LENGTH_SHORT).show();
-        //txtStatus.setText("Progress");
-    }
-
-    @Override
-    public void showProducts(List<RetailProduct> retailProductList) {
-        if (retailProductList != null) {
-            //txtStatus.setText(" totalSize " + retailProductList.size());
-        }
-    }
-
-    @Override
-    public void showError() {
-        Toast.makeText(this, "Error occured ", Toast.LENGTH_SHORT).show();
-        //txtStatus.setText("Error");
-    }
-
-    @Override
-    public void showSuccess() {
-        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-        //txtStatus.setText("success");
-    }
 }

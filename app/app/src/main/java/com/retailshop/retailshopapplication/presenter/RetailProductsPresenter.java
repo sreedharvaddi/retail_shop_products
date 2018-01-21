@@ -23,7 +23,23 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
         this.model = model;
     }
 
+    @Override
     public IRetailProductsModel getModel() { return model; }
+
+    @Override
+    public boolean isAllDataLoaded() {
+        return getModel().isAllDataLoaded();
+    }
+
+    @Override
+    public void loadProducts() {
+        if (!isLoading) {
+            isLoading = true;
+            model.loadProducts();
+        }
+        mView.showProgres();
+    }
+
     @Override
     public void loadProducts(int page, int pageSize) {
         if (!isLoading) {
@@ -47,6 +63,9 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
     @Override
     public void onLoadFinished(int status, List<RetailProduct> retailProducts) {
         isLoading = false;
+        if (mView == null) {
+            return;
+        }
         if (status == SUCCESS) {
             mView.showSuccess();
         }
@@ -64,7 +83,7 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
         public Builder() {
 
         }
-        Builder setModel(IRetailProductsModel model) {
+        public Builder setModel(IRetailProductsModel model) {
             this.model = model;
             return this;
         }
@@ -78,6 +97,7 @@ public class RetailProductsPresenter implements IRetailProductsPresenter, IRetai
                 productsPresenter.attachView(viewCallbacks);
             }
             if (model != null) {
+                productsPresenter.setModel(model);
                 model.setPresenter((IRetailProductsModel.IModelCallbacks) productsPresenter);
             }
             return productsPresenter;

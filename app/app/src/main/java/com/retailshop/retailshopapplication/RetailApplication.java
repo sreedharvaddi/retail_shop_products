@@ -12,17 +12,9 @@ import com.retailshop.retailshopapplication.model.repo.OnlineRepo;
  */
 
 public class RetailApplication extends Application {
-    IRetailProductsModel model;
     @Override
     public void onCreate() {
         super.onCreate();
 
-        OnlineRepo repo = new OnlineRepo();
-        RetailProductsModel.Builder builder = new RetailProductsModel.Builder();
-        model = builder.setOnlineRepo(repo).build();
-    }
-
-    public IRetailProductsModel getModel() {
-        return model;
     }
 }

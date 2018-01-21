@@ -8,6 +8,23 @@ import java.util.List;
 
 public class RetailProductsData {
     String id;
+    List<RetailProduct> productList;
+    int totalProducts;
+    int pageNumber;
+    int pageSize;
+    int status;
+    String kind;
+    String etag;
+    public RetailProductsData() {
+        id = "";
+        productList = null;
+        totalProducts = 0;
+        pageNumber = 0;
+        pageSize = 0;
+        status = 0;
+        kind = "";
+        etag= "";
+    }
 
     public String getId() {
         return id;
@@ -73,11 +90,4 @@ public class RetailProductsData {
         this.etag = etag;
     }
 
-    List<RetailProduct> productList;
-    int totalProducts;
-    int pageNumber;
-    int pageSize;
-    int status;
-    String kind;
-    String etag;
 }

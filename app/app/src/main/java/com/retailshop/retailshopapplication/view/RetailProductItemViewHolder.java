@@ -13,15 +13,15 @@ import com.retailshop.retailshopapplication.R;
 
 class RetailProductItemViewHolder extends RecyclerView.ViewHolder {
     public TextView txtProductName;
-    public TextView txtProductDesc;
     public TextView txtPrice;
     public ImageView imgProductImage;
+    public TextView txtRating;
 
     public RetailProductItemViewHolder(View itemView) {
         super(itemView);
         txtProductName = (TextView) itemView.findViewById(R.id.txt_product_name);
-        txtProductDesc = (TextView) itemView.findViewById(R.id.txt_product_desc);
         txtPrice = (TextView) itemView.findViewById(R.id.txt_price);
         imgProductImage= (ImageView) itemView.findViewById(R.id.img_product);
+        txtRating = (TextView) itemView.findViewById(R.id.txt_rating);
     }
 }

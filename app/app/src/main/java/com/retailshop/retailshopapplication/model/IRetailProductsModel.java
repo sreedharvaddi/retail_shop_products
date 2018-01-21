@@ -16,6 +16,12 @@ public interface IRetailProductsModel {
     boolean isOnline();
     void unregisterPresenter();
     RetailProductsData getCurrentData();
+
+    boolean isAllDataLoaded();
+    List<RetailProduct> loadProducts();
+    void clear();
+    boolean isLoading();
+
     interface IModelCallbacks {
         void onLoadFinished(int status, List<RetailProduct> retailProducts);
     }

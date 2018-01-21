@@ -5,17 +5,17 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.retailshop.retailshopapplication.MainActivity;
 import com.retailshop.retailshopapplication.R;
 import com.retailshop.retailshopapplication.RetailApplication;
 import com.retailshop.retailshopapplication.RetailProductsLoader;
@@ -25,24 +25,31 @@ import com.retailshop.retailshopapplication.presenter.RetailProductsPresenter;
 
 import java.util.List;
 
+
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RetailProductsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<RetailProductsPresenter>,IRetailProductsPresenter.IViewCallbacks {
+public class RetailProductsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<IRetailProductsPresenter>,IRetailProductsPresenter.IViewCallbacks, EndlessScrollListener.IScrollListener {
 
+    private final String TAG = "RetProductsListFragment";
     Button btnLoad;
     RecyclerView retailProductsRecyclerView;
-    RetailProductsPresenter productsPresenter;
+    IRetailProductsPresenter productsPresenter;
+    TextView emptyList;
     private RetailProductsAdaper retailProductsAdapter;
+    public final int PAGE_SIZE = 30;
 
     public RetailProductsListFragment() {
         // Required empty public constructor
+        Log.d(TAG, "RetailProductsListFragment()");
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView()");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_retail_products_list, container, false);
         setup(view);
@@ -54,41 +61,56 @@ public class RetailProductsListFragment extends Fragment implements LoaderManage
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //((MainActivity)getActivity()).showDetailFragment();
-                productsPresenter.loadProducts(1, 10);
+                refresh();
             }
         });
-        retailProductsRecyclerView = view.findViewById(R.id.ratailProductsRecyclerView);
+        retailProductsRecyclerView = view.findViewById(R.id.ratail_products_recycler_view);
         if (retailProductsRecyclerView  != null) {
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+            final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             retailProductsRecyclerView.setLayoutManager(llm);
             retailProductsAdapter = new RetailProductsAdaper();
             retailProductsRecyclerView.setAdapter(retailProductsAdapter);
+            retailProductsRecyclerView.addOnScrollListener(new EndlessScrollListener(llm, PAGE_SIZE, this));
         }
+        emptyList = view.findViewById(R.id.empty_list);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart()");
+
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        productsPresenter.attachView(this);
-        ((RetailApplication)getActivity().getApplicationContext()).getModel().setPresenter(productsPresenter);
-        productsPresenter.setModel(((RetailApplication)getActivity().getApplicationContext()).getModel());
-        refresh();
+        Log.d(TAG, "onResume()");
     }
 
     private void refresh() {
+        if (getActivity().getSupportFragmentManager().findFragmentByTag("retail_product_detail_fragment") != null) {
+            return;
+        }
         List<RetailProduct> list = productsPresenter.getModel().getCurrentData().getProductList();
-        if (list != null) {
+        if (list != null && list.size() > 0) {
+            hideEmptyList();
             showProducts(list);
         }
-        productsPresenter.loadProducts(productsPresenter.getModel().getCurrentData().getPageNumber()
-                , productsPresenter.getModel().getCurrentData().getPageSize());
+        else {
+            showEmptyList();
+        }
+        productsPresenter.loadProducts();
+    }
+
+    private void hideEmptyList() {
+        emptyList.setVisibility(View.GONE);
+    }
+
+    private void showEmptyList() {
+        emptyList.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -99,39 +121,55 @@ public class RetailProductsListFragment extends Fragment implements LoaderManage
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        productsPresenter.detachView(this);
+        Log.d(TAG, "onDestroyView()");
+        if (productsPresenter != null) {
+            productsPresenter.detachView(this);
+        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (productsPresenter == null) {
+        Log.d(TAG, "onActivityCreated()");
+        Loader<IRetailProductsPresenter> loader = getActivity().getLoaderManager().getLoader(101);
+        if (loader == null) {
             getActivity().getLoaderManager().initLoader(101, savedInstanceState, this);
         }
         else {
-            Loader<RetailProductsPresenter> loader = getActivity().getLoaderManager().getLoader(101);
             productsPresenter = ((RetailProductsLoader)loader).getPresenter();
+            productsPresenter.attachView(this);
+            refresh();
         }
     }
 
     @Override
-    public Loader<RetailProductsPresenter> onCreateLoader(int id, Bundle args) {
+    public Loader<IRetailProductsPresenter> onCreateLoader(int id, Bundle args) {
+        Log.d(TAG, "onCreateLoader()");
         return new RetailProductsLoader((Context) getActivity());
     }
 
     @Override
-    public void onLoadFinished(Loader<RetailProductsPresenter> loader, RetailProductsPresenter data) {
-        productsPresenter = data;
+    public void onLoadFinished(Loader<IRetailProductsPresenter> loader, IRetailProductsPresenter data) {
+        Log.d(TAG, "onLoadFinished()");
+        if (productsPresenter == null) {
+            Log.d(TAG, "productsPresenter loaded ");
+            productsPresenter = data;
+            productsPresenter.attachView(this);
+            refresh();
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<RetailProductsPresenter> loader) {
+    public void onLoaderReset(Loader<IRetailProductsPresenter> loader) {
+        Log.d(TAG, "onLoaderReset()");
         productsPresenter = null;
     }
 
     @Override
     public void showProgres() {
-        Toast.makeText(getActivity(), "Progress", Toast.LENGTH_SHORT).show();
+
+        Snackbar.make(retailProductsRecyclerView, "Progress", Snackbar.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -143,11 +181,22 @@ public class RetailProductsListFragment extends Fragment implements LoaderManage
 
     @Override
     public void showError() {
-        Toast.makeText(getActivity(), "Error occured ", Toast.LENGTH_SHORT).show();
+        Snackbar.make(retailProductsRecyclerView, "Error occured", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
     public void showSuccess() {
-        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+        Snackbar.make(retailProductsRecyclerView, "loaded successfully", Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void loadMore() {
+
+        if (productsPresenter.isAllDataLoaded() == false) {
+            productsPresenter.loadProducts();
+        }
+        else {
+            Snackbar.make(retailProductsRecyclerView, "Loaded all data", Snackbar.LENGTH_SHORT).show();
+        }
     }
 }
