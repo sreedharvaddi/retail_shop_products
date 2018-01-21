@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -74,6 +75,16 @@ public class RetailProductsListFragment extends Fragment implements LoaderManage
             retailProductsRecyclerView.addOnScrollListener(new EndlessScrollListener(llm, PAGE_SIZE, this));
         }
         emptyList = view.findViewById(R.id.empty_list);
+        getActivity().getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Log.d(TAG, "onBackStackChanged()"+getActivity().getSupportFragmentManager().getBackStackEntryCount());
+                if(getActivity().getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                    Log.d(TAG, "onBackStackChanged insise ");
+                    refresh();
+                }
+            }
+        });
     }
 
     @Override

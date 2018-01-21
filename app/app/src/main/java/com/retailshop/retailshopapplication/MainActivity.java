@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        showListFragment();
+        if (!isFinishing()) {
+            showListFragment();
+        }
     }
 
     public void showListFragment() {
