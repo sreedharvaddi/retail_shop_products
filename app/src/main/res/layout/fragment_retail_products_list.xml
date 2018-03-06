@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.RetailProductsListFragment"
+    android:background="@android:color/white">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnLoad"
+        android:text="Refresh"
+        android:layout_gravity="right"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Products Empty"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="10pt"
+        android:background="@android:color/white"
+        android:id="@+id/empty_list"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratail_products_recycler_view"
+        android:isScrollContainer="true"
+        android:layout_marginTop="50dp"
+        />
+
+</FrameLayout>

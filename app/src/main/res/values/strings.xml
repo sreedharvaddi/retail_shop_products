@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">RetailShopApplication</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="rating">Rating : %2.1f / 5</string>
+    <string name="price">Price : %s</string>
+    <string name="long_desc">Description :</string>
+</resources>
